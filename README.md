@@ -1,2 +1,2 @@
-# Scheduler
-Diassoft Scheduler
+# Diassoft Scheduler
+

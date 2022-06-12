@@ -5,12 +5,12 @@ VisualStudioVersion = 15.0.28307.1758
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C2F3B938-9AA8-475D-9937-C4199215959C}"
 	ProjectSection(SolutionItems) = preProject
-		README.MD = README.MD
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diassoft.Scheduler", "Diassoft.Scheduler\Diassoft.Scheduler.csproj", "{C09E138D-9EB3-426B-8BDC-1CD3F01067D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diassoft.Scheduler", "Diassoft.Scheduler\Diassoft.Scheduler.csproj", "{C09E138D-9EB3-426B-8BDC-1CD3F01067D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diassoft.Scheduler.NetCore.Test", "Diassoft.Scheduler.NetCore.Test\Diassoft.Scheduler.NetCore.Test.csproj", "{74A47A1D-5836-4299-A1F9-68DB2E2F4866}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diassoft.Scheduler.NetCore.Test", "Diassoft.Scheduler.NetCore.Test\Diassoft.Scheduler.NetCore.Test.csproj", "{74A47A1D-5836-4299-A1F9-68DB2E2F4866}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
