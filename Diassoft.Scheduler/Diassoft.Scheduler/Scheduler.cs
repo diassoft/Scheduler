@@ -270,11 +270,11 @@ namespace Diassoft.Scheduler
                 // This event needs to lock the Scheduler
                 lock (SchedulerLock)
                 {
-                    // Look for events that needs their schedule to be rebuild
+                    // Look for events that needs their schedule to be rebuild. A complete rebuild is triggered.
                     foreach (var eventInfo in EventMaster)
                     {
                         if (eventInfo.Value.LastBuiltDate.Date < DateTime.Today)
-                            CalculateSchedule(eventInfo.Key, DateTime.Today, DateTime.Today.AddDays(SCHEDULE_BUILD_DAYS), eventInfo.Value.ScheduleConfiguration);
+                            CalculateSchedule(eventInfo.Key, true, DateTime.Today, DateTime.Today.AddDays(SCHEDULE_BUILD_DAYS), eventInfo.Value.ScheduleConfiguration);
                     }
 
                 }
@@ -488,39 +488,63 @@ namespace Diassoft.Scheduler
         /// Calculate the schedule for the events based on a input date and add to the list
         /// </summary>
         /// <param name="uniqueName">The unique name representing the event</param>
+        /// <param name="destroyCurrentSchedule">Defines whether to destroy the existing schedule or keep it</param>
         /// <param name="scheduleBeginDate">The begin date to build the schedule at</param>
         /// <param name="scheduleEndDate">The end date to build the schedule</param>
         /// <param name="scheduleConfiguration">The configuration of the event execution date and time</param>
         /// <remarks>This function does not lock the <see cref="ScheduledEvents"/> list. Make sure it is locked before calling it.</remarks>
-        protected void CalculateSchedule(string uniqueName, DateTime scheduleBeginDate, DateTime scheduleEndDate, ScheduleConfiguration scheduleConfiguration)
+        protected void CalculateSchedule(string uniqueName, bool destroyCurrentSchedule, DateTime scheduleBeginDate, DateTime scheduleEndDate, ScheduleConfiguration scheduleConfiguration)
         {
-            var uniqueNameUpper = uniqueName.ToUpper();
+            // Logging
+            Logger?.LogTrace($"[{nameof(CalculateSchedule)}] Entering Function...");
 
-            if (!EventMaster.ContainsKey(uniqueNameUpper))
-                throw new ArgumentOutOfRangeException(nameof(uniqueName), $"Unable to find event '{uniqueNameUpper}'");
-
-            // Retrieve Event
-            var scheduledEvent = EventMaster[uniqueNameUpper];
-
-            var currentDateTime = DateTime.Now;
-            var schedule = scheduleConfiguration.GetExecutionDates(scheduleBeginDate.Date, scheduleEndDate.Date);
-
-            foreach (var executionTime in schedule)
+            try
             {
-                // Add the schedule to the real schedule
-                if (executionTime >= currentDateTime)
-                {
-                    // Set the key (202201010830-EVENT for example)
-                    var eventKey = executionTime.ToString(EVENT_KEY_DATE_FORMAT) + "-" + uniqueNameUpper;
+                var uniqueNameUpper = uniqueName.ToUpper();
 
-                    if (!ScheduledEvents.ContainsKey(eventKey))
+                if (!EventMaster.ContainsKey(uniqueNameUpper))
+                    throw new ArgumentOutOfRangeException(nameof(uniqueName), $"Unable to find event '{uniqueNameUpper}'");
+
+                // Retrieve Event
+                var scheduledEvent = EventMaster[uniqueNameUpper];
+
+                // Destroy current schedule if applicable
+                if (destroyCurrentSchedule)
+                    RemoveEventFromSchedule(uniqueName);
+
+                var currentDateTime = DateTime.Now;
+                var schedule = scheduleConfiguration.GetExecutionDates(scheduleBeginDate.Date, scheduleEndDate.Date);
+
+                foreach (var executionTime in schedule)
+                {
+                    // Add the schedule to the real schedule
+                    if (executionTime >= currentDateTime)
                     {
-                        var executionInfo = new ScheduledEventExecutionInfo(scheduledEvent.Name, scheduledEvent.Description, executionTime, scheduledEvent.EventGroup);
-                        ScheduledEvents.Add(eventKey, executionInfo);
-                        OnRecordAddedToSchedule(new ScheduleExecutionEventArgs(EventMaster[uniqueNameUpper], executionInfo));
+                        // Set the key (202201010830-EVENT for example)
+                        var eventKey = executionTime.ToString(EVENT_KEY_DATE_FORMAT) + "-" + uniqueNameUpper;
+
+                        if (!ScheduledEvents.ContainsKey(eventKey))
+                        {
+                            var executionInfo = new ScheduledEventExecutionInfo(scheduledEvent.Name, scheduledEvent.Description, executionTime, scheduledEvent.EventGroup);
+                            ScheduledEvents.Add(eventKey, executionInfo);
+                            OnRecordAddedToSchedule(new ScheduleExecutionEventArgs(EventMaster[uniqueNameUpper], executionInfo));
+                        }
                     }
                 }
             }
+            catch (Exception e)
+            {
+                // Logging
+                Logger?.LogError(e, $"[{nameof(CalculateSchedule)}] {DEFAULT_EXCEPTION_MESSAGE}");
+                throw e;
+            }
+            finally
+            {
+                // Logging
+                Logger?.LogTrace($"[{nameof(CalculateSchedule)}] Entering Function...");
+            }
+
+
         }
 
         /// <summary>
@@ -571,7 +595,7 @@ namespace Diassoft.Scheduler
 
                     // Build the schedule for N days
                     var currentDate = DateTime.Today;
-                    CalculateSchedule(eventInfo.Name, currentDate, currentDate.AddDays(SCHEDULE_BUILD_DAYS), eventInfo.ScheduleConfiguration);
+                    CalculateSchedule(eventInfo.Name, false, currentDate, currentDate.AddDays(SCHEDULE_BUILD_DAYS), eventInfo.ScheduleConfiguration);
 
                     // Update the Built Schedule
                     EventMaster[eventInfo.Name].LastBuiltDate = currentDate;
@@ -611,7 +635,7 @@ namespace Diassoft.Scheduler
                     if (!EventMaster.ContainsKey(uniqueNameUpper))
                         throw new Exception($"There is no event with the unique name '{uniqueNameUpper}' to be removed");
 
-                    // Look for all events and remove the events for the unique name
+                    // Look for all events and remove the events based on the unique name
                     foreach (var item in ScheduledEvents)
                     {
                         if (item.Value.Name == uniqueNameUpper)
@@ -674,44 +698,6 @@ namespace Diassoft.Scheduler
         }
 
         #endregion Methods
-
-        #region Data Management
-
-        /// <summary>
-        /// Convert the object into a byte array
-        /// </summary>
-        /// <param name="obj">The object to be converted</param>
-        /// <returns>A byte array with the object converted</returns>
-        /// <remarks>Use the function <see cref="ConvertByteArrayToObject(byte[])"/> to convert the data back into an object</remarks>
-        protected byte[] ConvertObjectToByteArray(T obj)
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            using (var memoryStream = new MemoryStream())
-            {
-                bf.Serialize(memoryStream, obj);
-                return memoryStream.ToArray();
-            }
-        }
-
-        /// <summary>
-        /// Converts a byte array into an object
-        /// </summary>
-        /// <param name="bytes">The byte array with the object data</param>
-        /// <returns>An object with the data obtained from the byte array</returns>
-        /// <remarks>Use the function <see cref="ConvertObjectToByteArray(T)"/> to convert the object into a byte array</remarks>
-        protected T ConvertByteArrayToObject(byte[] bytes)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                var bf = new BinaryFormatter();
-                memoryStream.Write(bytes, 0, bytes.Length);
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                var obj = bf.Deserialize(memoryStream);
-                return (T)obj;
-            }
-        }
-
-        #endregion Data Management
 
         #region Thread Processing
 

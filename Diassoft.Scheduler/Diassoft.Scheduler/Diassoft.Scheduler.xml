@@ -667,11 +667,12 @@
             <param name="eventUniqueName">The name of the event to search for</param>
             <param name="recordCount">The number of records to retrieve</param>
         </member>
-        <member name="M:Diassoft.Scheduler.Scheduler`1.CalculateSchedule(System.String,System.DateTime,System.DateTime,Diassoft.Scheduler.Configuration.ScheduleConfiguration)">
+        <member name="M:Diassoft.Scheduler.Scheduler`1.CalculateSchedule(System.String,System.Boolean,System.DateTime,System.DateTime,Diassoft.Scheduler.Configuration.ScheduleConfiguration)">
             <summary>
             Calculate the schedule for the events based on a input date and add to the list
             </summary>
             <param name="uniqueName">The unique name representing the event</param>
+            <param name="destroyCurrentSchedule">Defines whether to destroy the existing schedule or keep it</param>
             <param name="scheduleBeginDate">The begin date to build the schedule at</param>
             <param name="scheduleEndDate">The end date to build the schedule</param>
             <param name="scheduleConfiguration">The configuration of the event execution date and time</param>
@@ -705,22 +706,6 @@
             <param name="obj">The information regarding the event to be scheduled</param>
             <param name="scheduleEntry">The configuration of the event execution date and time</param>
             <remarks>This function will basically call the <see cref="M:Diassoft.Scheduler.Scheduler`1.RemoveEventFromSchedule(System.String)"/> and the <see cref="M:Diassoft.Scheduler.Scheduler`1.AddEventToSchedule(System.String,`0,Diassoft.Scheduler.Configuration.ScheduleConfiguration)"/></remarks>
-        </member>
-        <member name="M:Diassoft.Scheduler.Scheduler`1.ConvertObjectToByteArray(`0)">
-            <summary>
-            Convert the object into a byte array
-            </summary>
-            <param name="obj">The object to be converted</param>
-            <returns>A byte array with the object converted</returns>
-            <remarks>Use the function <see cref="M:Diassoft.Scheduler.Scheduler`1.ConvertByteArrayToObject(System.Byte[])"/> to convert the data back into an object</remarks>
-        </member>
-        <member name="M:Diassoft.Scheduler.Scheduler`1.ConvertByteArrayToObject(System.Byte[])">
-            <summary>
-            Converts a byte array into an object
-            </summary>
-            <param name="bytes">The byte array with the object data</param>
-            <returns>An object with the data obtained from the byte array</returns>
-            <remarks>Use the function <see cref="M:Diassoft.Scheduler.Scheduler`1.ConvertObjectToByteArray(`0)"/> to convert the object into a byte array</remarks>
         </member>
         <member name="M:Diassoft.Scheduler.Scheduler`1.Start">
             <summary>
