@@ -1,0 +1,817 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Diassoft.Scheduler</name>
+    </assembly>
+    <members>
+        <member name="T:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration">
+            <summary>
+            Represents a schedule entry with information to be executed every X seconds
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration.Interval">
+            <summary>
+            The interval of execution in seconds
+            </summary>
+            <remarks>A negative less than zero means the task should never be executed</remarks>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration.StartTime">
+            <summary>
+            The time to start executing the task
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration.EndTime">
+            <summary>
+            The time to stop executing the task
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration"/> class
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration.#ctor(System.Int32,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration"/> class
+            </summary>
+            <param name="interval">The interval of execution in seconds</param>
+            <param name="startTime">A string containing the start time. See <see cref="F:Diassoft.Scheduler.Configuration.ScheduleConfiguration.AcceptedTimeFormats"/> for a list of valid time formats.</param>
+            <param name="endTime">A string containing the end time. See <see cref="F:Diassoft.Scheduler.Configuration.ScheduleConfiguration.AcceptedTimeFormats"/> for a list of valid time formats.</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration.#ctor(System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration"/> class
+            </summary>
+            <param name="interval">The interval of execution in seconds</param>
+            <param name="recurrence">A string containing the recurrence. See <see cref="M:Diassoft.Scheduler.Configuration.Recurrence.#ctor(System.String)"/> for more details.</param>
+            <param name="startTime">A string containing the start time. See <see cref="F:Diassoft.Scheduler.Configuration.ScheduleConfiguration.AcceptedTimeFormats"/> for a list of valid time formats.</param>
+            <param name="endTime">A string containing the end time. See <see cref="F:Diassoft.Scheduler.Configuration.ScheduleConfiguration.AcceptedTimeFormats"/> for a list of valid time formats.</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration.#ctor(System.Int32,Diassoft.Scheduler.Configuration.Recurrence,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration"/> class
+            </summary>
+            <param name="interval">The interval of execution in seconds</param>
+            <param name="recurrence">An object containing the recurrence</param>
+            <param name="startTime">A string containing the start time. See <see cref="F:Diassoft.Scheduler.Configuration.ScheduleConfiguration.AcceptedTimeFormats"/> for a list of valid time formats.</param>
+            <param name="endTime">A string containing the end time. See <see cref="F:Diassoft.Scheduler.Configuration.ScheduleConfiguration.AcceptedTimeFormats"/> for a list of valid time formats.</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration.#ctor(System.Int32,System.DateTime,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration"/> class
+            </summary>
+            <param name="interval">The interval of execution in seconds</param>
+            <param name="startTime">The execution start time</param>
+            <param name="endTime">The execution end time</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration.#ctor(System.Int32,System.String,System.DateTime,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration"/> class
+            </summary>
+            <param name="interval">The interval of execution in seconds</param>
+            <param name="recurrence">A string string containing the recurrence. See <see cref="M:Diassoft.Scheduler.Configuration.Recurrence.#ctor(System.String)"/> for more details.</param>
+            <param name="startTime">The execution start time</param>
+            <param name="endTime">The execution end time</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration.#ctor(System.Int32,Diassoft.Scheduler.Configuration.Recurrence,System.DateTime,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration"/> class
+            </summary>
+            <param name="interval">The interval of execution in seconds</param>
+            <param name="recurrence">An object string containing the recurrence</param>
+            <param name="startTime">The execution start time</param>
+            <param name="endTime">The execution end time</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.EveryScheduleConfiguration.GetExecutionDates(System.DateTime,System.DateTime)">
+            <summary>
+            Calculate the Schedule
+            </summary>
+            <param name="scheduleBeginDate">The begin date to build the schedule at</param>
+            <param name="scheduleEndDate">The end date to build the schedule</param>
+            <returns>A <see cref="T:System.Collections.Generic.List`1"/> containing the execution dates and times</returns>
+        </member>
+        <member name="T:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration">
+            <summary>
+            Represents a schedule entry with information to be executed multiple times during the day
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration.TimesArray">
+            <summary>
+            An array containing the times to perform the scheduled task
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration"/> class
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration"/> class
+            </summary>
+            <param name="times">A string containing times separated by '|'</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration"/> class
+            </summary>
+            <param name="times">A string containing times separated by '|'</param>
+            <param name="recurrence">A string containing the recurrence. See <see cref="M:Diassoft.Scheduler.Configuration.Recurrence.#ctor(System.String)"/> for more details.</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration.#ctor(System.String,Diassoft.Scheduler.Configuration.Recurrence)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration"/> class
+            </summary>
+            <param name="times">A string containing times separated by '|'</param>
+            <param name="recurrence">An object containing the recurrence</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration.UpdateScheduledTimes(System.String)">
+            <summary>
+            Populate the <see cref="P:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration.TimesArray"/> with all times when the task execution must happen
+            </summary>
+            <param name="times">A string containing times separated by '|'</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.MultiScheduleConfiguration.GetExecutionDates(System.DateTime,System.DateTime)">
+            <summary>
+            Calculate the Schedule
+            </summary>
+            <param name="scheduleBeginDate">The begin date to build the schedule at</param>
+            <param name="scheduleEndDate">The end date to build the schedule</param>
+            <returns>A <see cref="T:System.Collections.Generic.List`1"/> containing the execution dates and times</returns>
+        </member>
+        <member name="T:Diassoft.Scheduler.Configuration.Recurrence">
+            <summary>
+            Defines the Recurrence of an Schedule Entry
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.Recurrence.Sunday">
+            <summary>
+            Schedule is active on Sunday
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.Recurrence.Monday">
+            <summary>
+            Schedule is active on Monday
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.Recurrence.Tuesday">
+            <summary>
+            Schedule is active on Tuesday
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.Recurrence.Wednesday">
+            <summary>
+            Schedule is active on Wednesday
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.Recurrence.Thursday">
+            <summary>
+            Schedule is active on Thursday
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.Recurrence.Friday">
+            <summary>
+            Schedule is active on Friday
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.Recurrence.Saturday">
+            <summary>
+            Schedule is active on Saturday
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.Recurrence.#ctor(System.String)">
+            <summary>
+            Initialiez a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.Recurrence"/> class
+            </summary>
+            <param name="recurrence">A string containing the days of week separated by |</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.Recurrence.SetRecurrence(System.String)">
+            <summary>
+            Set the Recurrence based on a string
+            </summary>
+            <param name="scheduleRecurrence">A string containing the days of week separated by |</param>
+        </member>
+        <member name="T:Diassoft.Scheduler.Configuration.RecurrentScheduleConfiguration">
+            <summary>
+            Represents the base class of a recurrent schedule
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.Configuration.RecurrentScheduleConfiguration.DEFAULT_RECURRENCE">
+            <summary>
+            The default recurrence
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.RecurrentScheduleConfiguration.Recurrence">
+            <summary>
+            The recurrence of the execution
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.RecurrentScheduleConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.RecurrentScheduleConfiguration"/> class
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.RecurrentScheduleConfiguration.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.RecurrentScheduleConfiguration"/> class
+            </summary>
+            <param name="recurrence">A string containing the recurrence of the schedule. See <see cref="M:Diassoft.Scheduler.Configuration.Recurrence.#ctor(System.String)"/> for more details.</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.RecurrentScheduleConfiguration.#ctor(Diassoft.Scheduler.Configuration.Recurrence)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.RecurrentScheduleConfiguration"/> class
+            </summary>
+            <param name="recurrence">An object containing the recurrence of the schedule</param>
+        </member>
+        <member name="T:Diassoft.Scheduler.Configuration.ScheduleConfiguration">
+            <summary>
+            Represents the base class of a schedule entry
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.Configuration.ScheduleConfiguration.AcceptedTimeFormats">
+            <summary>
+            An array containing the accepted time formats
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.ScheduleConfiguration.StartDate">
+            <summary>
+            The date when the task should start to be executed
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Configuration.ScheduleConfiguration.EndDate">
+            <summary>
+            The date when the task should stop being executed
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.ScheduleConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Configuration.ScheduleConfiguration"/>
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Configuration.ScheduleConfiguration.GetExecutionDates(System.DateTime,System.DateTime)">
+            <summary>
+            A function to calculate the schedule based on the parameters
+            </summary>
+            <param name="scheduleBeginDate">The begin date to build the schedule at</param>
+            <param name="scheduleEndDate">The end date to build the schedule</param>
+            <returns>A <see cref="T:System.Collections.Generic.List`1"/> containing the execution dates and times</returns>
+        </member>
+        <member name="T:Diassoft.Scheduler.ScheduledEventExecutionInfo">
+            <summary>
+            Represent information regarding the execution of an event
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.ScheduledEventExecutionInfo.Name">
+            <summary>
+            A unique name for the event
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.ScheduledEventExecutionInfo.Description">
+            <summary>
+            A description for the event
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.ScheduledEventExecutionInfo.ExecutionDateTime">
+            <summary>
+            The time the event will be triggered
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.ScheduledEventExecutionInfo.EventGroup">
+            <summary>
+            Defines the group of the event
+            </summary>
+            <remarks>See the enumeration <see cref="T:Diassoft.Scheduler.EventGroups"/> for more information</remarks>
+        </member>
+        <member name="M:Diassoft.Scheduler.ScheduledEventExecutionInfo.#ctor(System.String,System.String,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.ScheduledEventExecutionInfo"/> class
+            </summary>
+            <param name="name">The unique name of the event</param>
+            <param name="description">The description of the event</param>
+            <param name="executionDateTime">The date and time the event will be triggered</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.ScheduledEventExecutionInfo.#ctor(System.String,System.String,System.DateTime,Diassoft.Scheduler.EventGroups)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.ScheduledEventExecutionInfo"/> class
+            </summary>
+            <param name="name">The unique name of the event</param>
+            <param name="description">The description of the event</param>
+            <param name="executionDateTime">The date and time the event will be triggered</param>
+            <param name="eventGroup">The event group (for internal purposes only)</param>
+        </member>
+        <member name="T:Diassoft.Scheduler.ScheduledEventInfo">
+            <summary>
+            Represent information regarding an event being scheduled
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.ScheduledEventInfo.Name">
+            <summary>
+            A unique name for the event
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.ScheduledEventInfo.Description">
+            <summary>
+            A description for the event
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.ScheduledEventInfo.Event">
+            <summary>
+            An object containing event data to be used for the event submission
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.ScheduledEventInfo.ScheduleConfiguration">
+            <summary>
+            The schedule configuration for the event
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.ScheduledEventInfo.LastBuiltDate">
+            <summary>
+            The time the schedule for the event has been built for the last time
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.ScheduledEventInfo.EventGroup">
+            <summary>
+            Defines the group of the event
+            </summary>
+            <remarks>See the enumeration <see cref="T:Diassoft.Scheduler.EventGroups"/> for more information</remarks>
+        </member>
+        <member name="M:Diassoft.Scheduler.ScheduledEventInfo.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.ScheduledEventInfo"/> class
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.ScheduledEventInfo.#ctor(Diassoft.Scheduler.EventGroups)">
+            <summary>
+            Internal method that initializes a new instance of the <see cref="T:Diassoft.Scheduler.ScheduledEventInfo"/> class
+            </summary>
+            <param name="eventGroup">The event group</param>
+        </member>
+        <member name="T:Diassoft.Scheduler.EventGroups">
+            <summary>
+            A list of valid groups of events
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.EventGroups.Regular">
+            <summary>
+            This is a regular event.
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.EventGroups.Internal">
+            <summary>
+            This is an internal event, only important for the <see cref="T:Diassoft.Scheduler.Scheduler`1"/> class.
+            </summary>
+            <remarks>Internal Events do not trigger the <see cref="E:Diassoft.Scheduler.Scheduler`1.EventTimeReached"/>. Instead, they call an internal event of the <see cref="T:Diassoft.Scheduler.Scheduler`1"/> class.</remarks>
+        </member>
+        <member name="T:Diassoft.Scheduler.ScheduleEventArgs">
+            <summary>
+            Provides data for the schedule event
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.ScheduleEventArgs.EventInfo">
+            <summary>
+            Defines event information
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.ScheduleEventArgs.#ctor(Diassoft.Scheduler.ScheduledEventInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.ScheduleEventArgs"/> class
+            </summary>
+            <param name="eventInfo">Information regarding the event being triggered</param>
+        </member>
+        <member name="T:Diassoft.Scheduler.ScheduleExecutionEventArgs">
+            <summary>
+            Provides data for the schedule execution event
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.ScheduleExecutionEventArgs.ExecutionInfo">
+            <summary>
+            The information regarding the event execution
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.ScheduleExecutionEventArgs.#ctor(Diassoft.Scheduler.ScheduledEventInfo,Diassoft.Scheduler.ScheduledEventExecutionInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.ScheduleExecutionEventArgs"/> class
+            </summary>
+            <param name="eventInfo">Information regarding the event being executed</param>
+            <param name="executionInfo">Information regarding the event execution</param>
+        </member>
+        <member name="T:Diassoft.Scheduler.Scheduler`1">
+            <summary>
+            A class that defines a scheduler for events.
+            </summary>
+            <typeparam name="T">The type of event to be triggered</typeparam>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.DEFAULT_EXCEPTION_MESSAGE">
+            <summary>
+            The default description of an exception
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.EVENT_KEY_DATE_FORMAT">
+            <summary>
+            The date format for the event key
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.DISPLAY_DATE_FORMAT">
+            <summary>
+            The default date format to be used for display purposes
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.SCHEDULE_BUILD_DAYS">
+            <summary>
+            The number of days to build the schedule for. 
+            </summary>
+            <remarks>Do not use zero or too many. Usually 1 or 2 is enough.</remarks>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.WAITING_TIME_CHECKING">
+            <summary>
+            The time the service will wait to check the schedule again (in milliseconds)
+            </summary>
+            <remarks>Be careful with this configuration</remarks>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.WAIT_FOR_COMPLETION_TIMEOUT">
+            <summary>
+            The maximum time any method would wait for completion (in milliseconds)
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.INTERNAL_EVENT_CALCULATE_SCHEDULE">
+            <summary>
+            An internal event called to tell the system to recalculate the schedule
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.Logger">
+            <summary>
+            The Logger to be used for tracing or error logging
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.SchedulerLock">
+            <summary>
+            A lock to be used when interacting with objects that require exclusive access
+            </summary>
+            <remarks>The following objects require exclusive access:
+            <list type="bullet">
+            <item><see cref="F:Diassoft.Scheduler.Scheduler`1.EventMaster"/></item>
+            </list></remarks>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.EventMaster">
+            <summary>
+            A dictionary containing the master data for the event, keyed by its name
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.ScheduledEvents">
+            <summary>
+            A sorted list keyed by the date and time of the next execution, containing the name of the event to be triggered
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Scheduler`1.TriggerEventsAsynchronously">
+            <summary>
+            Defines whether the events will be triggered asynchronously or synchronously
+            </summary>
+            <remarks>By default, all events should be triggered on its own Task. It is not recommended to trigger events synchronously.</remarks>
+        </member>
+        <member name="E:Diassoft.Scheduler.Scheduler`1.SchedulerStarted">
+            <summary>
+            An event triggered when the scheduler service starts
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.OnSchedulerStarted(System.EventArgs)">
+            <summary>
+            Method called prior to raising the <see cref="E:Diassoft.Scheduler.Scheduler`1.SchedulerStarted"/> event
+            </summary>
+            <param name="e"></param>
+            <remarks>This method should change the status</remarks>
+        </member>
+        <member name="E:Diassoft.Scheduler.Scheduler`1.SchedulerPausing">
+            <summary>
+            An event triggered when the scheduler service is pausing
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.OnSchedulerPausing(System.EventArgs)">
+            <summary>
+            Method called prior to raising the <see cref="E:Diassoft.Scheduler.Scheduler`1.SchedulerPausing"/> event
+            </summary>
+            <param name="e"></param>
+            <remarks>This method should change the status</remarks>
+        </member>
+        <member name="E:Diassoft.Scheduler.Scheduler`1.SchedulerPaused">
+            <summary>
+            An event triggered when the scheduler service is paused
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.OnSchedulerPaused(System.EventArgs)">
+            <summary>
+            Method called prior to raising the <see cref="E:Diassoft.Scheduler.Scheduler`1.SchedulerPaused"/> event
+            </summary>
+            <param name="e"></param>
+            <remarks>This method should change the status</remarks>
+        </member>
+        <member name="E:Diassoft.Scheduler.Scheduler`1.SchedulerResuming">
+            <summary>
+            An event triggered when the scheduler service is resuming from a paused state
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.OnSchedulerResuming(System.EventArgs)">
+            <summary>
+            Method called prior to raising the <see cref="E:Diassoft.Scheduler.Scheduler`1.SchedulerPaused"/> event
+            </summary>
+            <param name="e"></param>
+            <remarks>This method should change the status</remarks>
+        </member>
+        <member name="E:Diassoft.Scheduler.Scheduler`1.SchedulerResumed">
+            <summary>
+            An event triggered when the scheduler service is resumed after a paused state
+            </summary>
+            <remarks>This method should change the status</remarks>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.OnSchedulerResumed(System.EventArgs)">
+            <summary>
+            Method called prior to raising the <see cref="E:Diassoft.Scheduler.Scheduler`1.SchedulerPaused"/> event
+            </summary>
+            <param name="e"></param>
+            <remarks>This method should change the status</remarks>
+        </member>
+        <member name="E:Diassoft.Scheduler.Scheduler`1.SchedulerStopping">
+            <summary>
+            An event triggered when a request to stop the scheduler is called
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.OnSchedulerStopping(System.EventArgs)">
+            <summary>
+            Method caleld prior to raising the <see cref="E:Diassoft.Scheduler.Scheduler`1.SchedulerStopping"/> event
+            </summary>
+            <param name="e"></param>
+            <remarks>This method should change the status</remarks>
+        </member>
+        <member name="E:Diassoft.Scheduler.Scheduler`1.SchedulerStopped">
+            <summary>
+            An event triggered when the scheduler service fully stops
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.OnSchedulerStopped(System.EventArgs)">
+            <summary>
+            Method called prior to raising the <see cref="E:Diassoft.Scheduler.Scheduler`1.SchedulerStopped"/> event
+            </summary>
+            <param name="e"></param>
+            <remarks>This method should change the status</remarks>
+        </member>
+        <member name="E:Diassoft.Scheduler.Scheduler`1.EventTimeReached">
+            <summary>
+            An event triggered when an event should be executed
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.OnEventTimeReached(Diassoft.Scheduler.ScheduleEventArgs)">
+            <summary>
+            Method called prior to raising the <see cref="E:Diassoft.Scheduler.Scheduler`1.EventTimeReached"/> event
+            </summary>
+            <param name="e">The arguments for the <see cref="E:Diassoft.Scheduler.Scheduler`1.EventTimeReached"/> event</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.OnInternalEventTimeReached(Diassoft.Scheduler.ScheduleEventArgs)">
+            <summary>
+            Method called once an internal event is triggered.
+            </summary>
+            <remarks>An internal event does not trigger the <see cref="E:Diassoft.Scheduler.Scheduler`1.EventTimeReached"/> event. Instead, they must be handled by this method.</remarks>
+            <param name="e">The arguments for the internal event</param>
+        </member>
+        <member name="E:Diassoft.Scheduler.Scheduler`1.RecordAddedToSchedule">
+            <summary>
+            An event triggered when a record is added to the schedule
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.OnRecordAddedToSchedule(Diassoft.Scheduler.ScheduleExecutionEventArgs)">
+            <summary>
+            Method called prior to raising the <see cref="E:Diassoft.Scheduler.Scheduler`1.RecordAddedToSchedule"/> event
+            </summary>
+            <param name="e">The arguments for the <see cref="E:Diassoft.Scheduler.Scheduler`1.RecordAddedToSchedule"/> event</param>
+        </member>
+        <member name="E:Diassoft.Scheduler.Scheduler`1.RecordRemovedFromSchedule">
+            <summary>
+            An event triggered when a record is removed from the schedule
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.OnRecordRemovedFromSchedule(Diassoft.Scheduler.ScheduleExecutionEventArgs)">
+            <summary>
+            Method called prior to raising the <see cref="M:Diassoft.Scheduler.Scheduler`1.OnRecordRemovedFromSchedule(Diassoft.Scheduler.ScheduleExecutionEventArgs)"/> event
+            </summary>
+            <param name="e">The arguments for the <see cref="E:Diassoft.Scheduler.Scheduler`1.RecordRemovedFromSchedule"/> event</param>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.statusLock">
+            <summary>
+            A lock for the <see cref="P:Diassoft.Scheduler.Scheduler`1.Status"/> property
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1._status">
+            <summary>
+            The internal variable to store the <see cref="P:Diassoft.Scheduler.Scheduler`1.Status"/>
+            </summary>
+        </member>
+        <member name="P:Diassoft.Scheduler.Scheduler`1.Status">
+            <summary>
+            The Scheduler Current Status
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.ctsSchedulerThread">
+            <summary>
+            Cancellation Token to be used to cancel the scheduler thread (the one submitting the jobs)
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.Scheduler`1.SchedulerThread">
+            <summary>
+            The Thread that submits jobs based on their schedule
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Scheduler`1"/> class
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.#ctor(Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Diassoft.Scheduler.Scheduler`1"/> class
+            </summary>
+            <param name="logger">The logger</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.GetCurrentSchedule">
+            <summary>
+            Returns a list containing all events currently scheduled
+            </summary>
+            <remarks>Internal events are ignored by this method</remarks>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.GetCurrentSchedule(System.Boolean)">
+            <summary>
+            Returns a list containing all events currently scheduled
+            </summary>
+            <param name="includeInternalEvents">A flag to define whether to display internal events or not</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.GetCurrentSchedule(System.Int32)">
+            <summary>
+            Returns a list containing all events currently scheduled
+            </summary>
+            <param name="recordCount">The number of records to retrieve</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.GetCurrentSchedule(System.Int32,System.Boolean)">
+            <summary>
+            Returns a list containing all events currently scheduled
+            </summary>
+            <param name="recordCount">The number of records to retrieve</param>
+            <param name="includeInternalEvents">A flag to define whether to display internal events or not</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.GetCurrentSchedule(System.String)">
+            <summary>
+            Returns a list containing events currently scheduled for a given event unique name
+            </summary>
+            <param name="eventUniqueName">The name of the event to search for</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.GetCurrentSchedule(System.String,System.Int32)">
+            <summary>
+            Returns a list containing events currently scheduled for a given event unique name
+            </summary>
+            <param name="eventUniqueName">The name of the event to search for</param>
+            <param name="recordCount">The number of records to retrieve</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.CalculateSchedule(System.String,System.Boolean,System.DateTime,System.DateTime,Diassoft.Scheduler.Configuration.ScheduleConfiguration)">
+            <summary>
+            Calculate the schedule for the events based on a input date and add to the list
+            </summary>
+            <param name="uniqueName">The unique name representing the event</param>
+            <param name="destroyCurrentSchedule">Defines whether to destroy the existing schedule or keep it</param>
+            <param name="scheduleBeginDate">The begin date to build the schedule at</param>
+            <param name="scheduleEndDate">The end date to build the schedule</param>
+            <param name="scheduleConfiguration">The configuration of the event execution date and time</param>
+            <remarks>This function does not lock the <see cref="F:Diassoft.Scheduler.Scheduler`1.ScheduledEvents"/> list. Make sure it is locked before calling it.</remarks>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.AddEventToSchedule(System.String,`0,Diassoft.Scheduler.Configuration.ScheduleConfiguration)">
+            <summary>
+            Schedule an event
+            </summary>
+            <param name="uniqueName">The unique name representing the event</param>
+            <param name="obj">The information regarding the event to be scheduled</param>
+            <param name="scheduleConfiguration">The configuration of the event execution date and time</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.AddEventToSchedule(Diassoft.Scheduler.ScheduledEventInfo)">
+            <summary>
+            Internal method to add an event to the schedule
+            </summary>
+            <param name="eventInfo">The event information</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.RemoveEventFromSchedule(System.String)">
+            <summary>
+            Removes an event from the schedule
+            </summary>
+            <param name="uniqueName">The unique name representing the event</param>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.ReplaceEventSchedule(System.String,`0,Diassoft.Scheduler.Configuration.ScheduleConfiguration)">
+            <summary>
+            Updates the Schedule with a new one
+            </summary>
+            <param name="uniqueName">The unique name representing the event</param>
+            <param name="obj">The information regarding the event to be scheduled</param>
+            <param name="scheduleEntry">The configuration of the event execution date and time</param>
+            <remarks>This function will basically call the <see cref="M:Diassoft.Scheduler.Scheduler`1.RemoveEventFromSchedule(System.String)"/> and the <see cref="M:Diassoft.Scheduler.Scheduler`1.AddEventToSchedule(System.String,`0,Diassoft.Scheduler.Configuration.ScheduleConfiguration)"/></remarks>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.Start">
+            <summary>
+            Starts the Scheduler
+            </summary>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.OnCreateInternalEvents">
+            <summary>
+            Method called to add internal events to the scheduler
+            </summary>
+            <remarks>When overriding this method, make sure to call the base method</remarks>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.Stop">
+            <summary>
+            Requests the Scheduler to stop
+            </summary>
+            <remarks>This method will request a stop and exit irrespective of the scheduler status. Check the <see cref="E:Diassoft.Scheduler.Scheduler`1.SchedulerStopped"/> event to ensure the service is stopped.</remarks>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.Pause">
+            <summary>
+            Pause the Scheduler Services
+            </summary>
+            <remarks>The system will put the <see cref="F:Diassoft.Scheduler.Scheduler`1.SchedulerThread"/> into a sleep state, which has to be awake using the <see cref="M:Diassoft.Scheduler.Scheduler`1.Resume(System.Boolean)"/> method</remarks>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.Pause(System.Boolean)">
+            <summary>
+            Pause the Scheduler Services
+            </summary>
+            <param name="waitForCompletion">Defines whether the method will return only after the pause has been completed</param>
+            <remarks>The system will put the <see cref="F:Diassoft.Scheduler.Scheduler`1.SchedulerThread"/> into a sleep state, which has to be awake using the <see cref="M:Diassoft.Scheduler.Scheduler`1.Resume(System.Boolean)"/> method</remarks>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.Resume">
+            <summary>
+            Resumes the scheduling services
+            </summary>
+            <remarks>The system will call an interrupt on the <see cref="F:Diassoft.Scheduler.Scheduler`1.SchedulerThread"/>. If the thread is not at a valid state, it will throw a <see cref="T:System.Threading.ThreadStateException"/>.</remarks>
+            <exception cref="T:System.Threading.ThreadStateException">Thrown when the <see cref="F:Diassoft.Scheduler.Scheduler`1.SchedulerThread"/> is not at <see cref="F:System.Threading.ThreadState.WaitSleepJoin"/> state</exception>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.Resume(System.Boolean)">
+            <summary>
+            Resumes the scheduling services
+            </summary>
+            <param name="waitForCompletion">Defines whether the method will return only after the pause has been completed</param>
+            <remarks>The system will call an interrupt on the <see cref="F:Diassoft.Scheduler.Scheduler`1.SchedulerThread"/>. If the thread is not at a valid state, it will throw a <see cref="T:System.Threading.ThreadStateException"/>.</remarks>
+            <exception cref="T:System.Threading.ThreadStateException">Thrown when the <see cref="F:Diassoft.Scheduler.Scheduler`1.SchedulerThread"/> is not at <see cref="F:System.Threading.ThreadState.WaitSleepJoin"/> state</exception>
+        </member>
+        <member name="M:Diassoft.Scheduler.Scheduler`1.ProcessSchedule(System.Object)">
+            <summary>
+            Method to be executed by the Scheduler Thread, which is in charge of calling the events when a task has to be submitted.
+            </summary>
+            <param name="obj">The Cancellation Token to be used to cancel the Scheduler Thread</param>
+        </member>
+        <member name="T:Diassoft.Scheduler.SchedulerStatus">
+            <summary>
+            Specifies the Scheduler States
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.SchedulerStatus.Stopped">
+            <summary>
+            The Scheduler is Stopped
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.SchedulerStatus.StopRequested">
+            <summary>
+            The Scheduler is going to stop scheduling events
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.SchedulerStatus.Stopping">
+            <summary>
+            The Scheduler is processing a Stop Request, and it will be stopped once all scheduling events are deleted
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.SchedulerStatus.Active">
+            <summary>
+            The Scheduler is active and processing events
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.SchedulerStatus.Starting">
+            <summary>
+            The Scheduler is Starting
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.SchedulerStatus.Paused">
+            <summary>
+            The Scheduler is Paused
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.SchedulerStatus.PauseRequested">
+            <summary>
+            The Scheduler is going to pause scheduling events
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.SchedulerStatus.Pausing">
+            <summary>
+            The Scheduler is processing a Pause Request
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.SchedulerStatus.ResumeRequested">
+            <summary>
+            The Scheduler is going to resume scheduling events
+            </summary>
+        </member>
+        <member name="F:Diassoft.Scheduler.SchedulerStatus.Resuming">
+            <summary>
+            The Scheduler is resuming from a Paused state
+            </summary>
+        </member>
+    </members>
+</doc>
