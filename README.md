@@ -1,9 +1,9 @@
 # Scheduler - v1.1.0
 
 [![nuget](https://img.shields.io/nuget/v/Diassoft.Scheduler.svg)](https://www.nuget.org/packages/Diassoft.Scheduler/) 
-![GitHub release](https://img.shields.io/github/release/diassoft/Diassoft.Scheduler.svg)
+![GitHub release](https://img.shields.io/github/release/diassoft/Scheduler.svg)
 ![NuGet](https://img.shields.io/nuget/dt/Diassoft.Scheduler.svg)
-![license](https://img.shields.io/github/license/diassoft/Diassoft.Scheduler.svg)
+![license](https://img.shields.io/github/license/diassoft/Scheduler.svg)
 
 The Scheduler is a component that allows the configuration of specific dates times for events to be triggered.
 
