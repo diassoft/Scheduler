@@ -190,7 +190,7 @@ namespace Diassoft.Scheduler.NetCore.Test
         {
             public ColorConsoleEvent()
             {
-                
+
             }
 
             public static byte CurrentSet { get; set; } = 1;
