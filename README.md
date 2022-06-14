@@ -19,14 +19,6 @@ An event could be anything. The Scheduler does not actually execute the event it
 * [Using the Scheduler](#using-the-scheduler)
 * [Scheduler Documentation](https://diassoft.github.io/Scheduler_v1000)
 
-## Additional Repositories
-
-The following repositories are consumers of the Scheduler component.
-
-| Repository | Description |
-| :--- | :-- |
-| [Subsystem](https://github.com/diassoft/Diassoft.Subsystem) | A component that implements a subsystem with job execution queues |
-
 ## Getting Started
 
 The first thing you have to do is to define the event to be triggered. You can use any class for the event, including basic classes such as `System.String`. However, you may want to create a custom class to represent the event.
