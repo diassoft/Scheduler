@@ -64,9 +64,9 @@ namespace Diassoft.Scheduler
         /// </summary>
         Regular = 0,
         /// <summary>
-        /// This is an internal event, only important for the <see cref="Scheduler{T}"/> class.
+        /// This is an internal event, only important for the <see cref="EventScheduler{T}"/> class.
         /// </summary>
-        /// <remarks>Internal Events do not trigger the <see cref="Scheduler{T}.EventTimeReached"/>. Instead, they call an internal event of the <see cref="Scheduler{T}"/> class.</remarks>
+        /// <remarks>Internal Events do not trigger the <see cref="EventScheduler{T}.EventTimeReached"/>. Instead, they call an internal event of the <see cref="EventScheduler{T}"/> class.</remarks>
         Internal = 1
     }
 

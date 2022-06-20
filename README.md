@@ -1,4 +1,4 @@
-# Scheduler - v1.1.0
+# Scheduler - v1.2.0
 
 [![nuget](https://img.shields.io/nuget/v/Diassoft.Scheduler.svg)](https://www.nuget.org/packages/Diassoft.Scheduler/) 
 ![GitHub release](https://img.shields.io/github/release/diassoft/Scheduler.svg)
@@ -18,6 +18,14 @@ An event could be anything. The Scheduler does not actually execute the event it
     * [Understanding the Schedule Recurrence](#understanding-the-schedule-recurrence)
 * [Using the Scheduler](#using-the-scheduler)
 * [Scheduler Documentation](https://diassoft.github.io/Scheduler_v1000)
+
+### Recent Changes
+
+This is a list containing the most relevant changes that the developers need to be aware when upgrading versions.
+
+| Version | Notes |
+| :-- | :-- |
+| v1.2.0 | Replaced the `Scheduler<T>` with the `EventScheduler<T>` class |
 
 ## Getting Started
 
@@ -56,7 +64,7 @@ Here is the full code example:
 
 ```cs
 // Defines the scheduler
-var scheduler = new Scheduler.Scheduler<ColorEvent>();
+var scheduler = new EventScheduler<ColorEvent>();
 scheduler.EventTimeReached += Scheduler_EventTimeReached;
 
 // Create the proper events
@@ -99,7 +107,7 @@ For a complete explanation of each class, refer to the [Scheduler Documentation]
 ## Understanding Events
 
 Events can be anything that has to be processed at a certain date and time. 
-The `Scheduler` component is responsible for triggering an alert that it's time to process an event. However, the responsibility of processing the event is on the consumer of the `Scheduler` component. 
+The `EventScheduler` component is responsible for triggering an alert that it's time to process an event. However, the responsibility of processing the event is on the consumer of the `EventScheduler` component. 
 
 The easiest way to create an event is to use a `System.String` as the event, and have the consumer do what is necessary with the string.
 
@@ -138,7 +146,7 @@ Here is the full example:
 
 ```cs
 // Defines the scheduler
-var scheduler = new Scheduler.Scheduler<CheckFilesAndEmailEvent>();
+var scheduler = new EventScheduler<CheckFilesAndEmailEvent>();
 scheduler.EventTimeReached += Scheduler_EventTimeReached;
 
 // Create the proper events
@@ -202,11 +210,11 @@ When inheriting from the `RecurrentScheduleConfiguration`, make sure to have a c
 
 # Using the Scheduler
 
-The main class of the Scheduler component is the `Scheduler<T>` class.
+The main class of the Scheduler component is the `EventScheduler<T>` class.
 
 This class provides a complete scheduler, which will run on its own thread and, at the proper date and time, will call a method to inform that it's time to process a certain event.
 
-The main methods of the `Scheduler` class are listed below:
+The main methods of the `EventScheduler` class are listed below:
 
 | Method | Description |
 | :-- | :-- |
@@ -225,7 +233,7 @@ The following code demonstrates how to initialize the scheduler:
 
 ```cs
 // Defines the scheduler
-var scheduler = new Scheduler.Scheduler<System.String>();
+var scheduler = new EventScheduler<System.String>();
 scheduler.EventTimeReached += Scheduler_EventTimeReached;
 
 // Start the scheduler service (you can start the service and add the events later too)
@@ -240,4 +248,4 @@ private static void Scheduler_EventTimeReached(object sender, Scheduler.Schedule
 }
 ```
 
-> A list of all the methods of the `Scheduler` class can be found on the [Scheduler Documentation](https://diassoft.github.io/Scheduler_v1000).
+> A list of all the methods of the `EventScheduler` class can be found on the [Scheduler Documentation](https://diassoft.github.io/Scheduler_v1000).

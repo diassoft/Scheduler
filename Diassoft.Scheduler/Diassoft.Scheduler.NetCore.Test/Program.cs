@@ -8,7 +8,7 @@ namespace Diassoft.Scheduler.NetCore.Test
     {
         static void Main(string[] args)
         {
-            var scheduler = new Scheduler.Scheduler<ColorConsoleEvent>();
+            var scheduler = new Scheduler.EventScheduler<ColorConsoleEvent>();
             scheduler.SchedulerStarted += Scheduler_SchedulerStarted;
             scheduler.SchedulerStopping += Scheduler_SchedulerStopping;
             scheduler.SchedulerStopped += Scheduler_SchedulerStopped;

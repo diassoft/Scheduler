@@ -10,13 +10,13 @@
     <PackageIcon>Nuget\Nuget-Package-Icon-v01-250x250.png</PackageIcon>
     <PackageIconUrl>https://github.com/diassoft/Branding/blob/master/Nuget-Package-Icon-v01.png?raw=true</PackageIconUrl>
     <iconUrl>https://github.com/diassoft/Branding/blob/master/Nuget-Package-Icon-v01.png?raw=true</iconUrl>
-    <RepositoryUrl>https://github.com/diassoft/DataAccess</RepositoryUrl>
+    <RepositoryUrl>https://github.com/diassoft/Scheduler</RepositoryUrl>
     <RepositoryType>Public</RepositoryType>
     <PackageTags>Diassoft Task Scheduler Schedule Execution Times</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
-    <Version>1.1.0</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
