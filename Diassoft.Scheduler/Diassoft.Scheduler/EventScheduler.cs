@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Globalization;
 using System.IO;
@@ -16,7 +17,7 @@ namespace Diassoft.Scheduler
     /// A class that defines a scheduler for events.
     /// </summary>
     /// <typeparam name="T">The type of event to be triggered</typeparam>
-    public class Scheduler<T>
+    public class EventScheduler<T>
     {
         #region Constants
         
@@ -42,10 +43,6 @@ namespace Diassoft.Scheduler
         /// </summary>
         /// <remarks>Be careful with this configuration</remarks>
         public const int WAITING_TIME_CHECKING = 5000;
-        /// <summary>
-        /// The maximum time any method would wait for completion (in milliseconds)
-        /// </summary>
-        public const int WAIT_FOR_COMPLETION_TIMEOUT = 60000;
 
         // Internal Event Names
         /// <summary>
@@ -85,9 +82,48 @@ namespace Diassoft.Scheduler
         /// <remarks>By default, all events should be triggered on its own Task. It is not recommended to trigger events synchronously.</remarks>
         public bool TriggerEventsAsynchronously { get; set; } = true;
 
+        /// <summary>
+        /// The maximum time any method would wait for completion (in milliseconds)
+        /// </summary>
+        public int WaitForCompletionTimeout { get; set; } = 60000;
+
         #endregion Properties
 
         #region Events
+
+        #region Event - Scheduler Start
+
+        /// <summary>
+        /// A cancelable event triggered before the scheduler service is starting
+        /// </summary>
+        public event CancelEventHandler BeforeSchedulerStarting;
+        /// <summary>
+        /// An event triggered when the scheduler service is starting
+        /// </summary>
+        public event EventHandler<EventArgs> SchedulerStarting;
+        /// <summary>
+        /// Method called prior to raising the <see cref="SchedulerStarting"/> event
+        /// </summary>
+        /// <param name="e">The Event Arguments</param>
+        protected virtual void OnSchedulerStarting(EventArgs e)
+        {
+            // Check for Event Cancellation
+            var eCancelable = new CancelEventArgs();
+            BeforeSchedulerStarting?.Invoke(this, eCancelable);
+
+            if (eCancelable.Cancel == true) return;
+
+            // Initializes the Scheduler
+            Status = SchedulerStatus.Starting;
+            SchedulerStarting?.Invoke(this, e);
+
+            // Create Internal Events
+            OnCreateInternalEvents();
+
+            // Starts the Scheduler Thread
+            ctsSchedulerThread = new CancellationTokenSource();
+            SchedulerThread.Start(ctsSchedulerThread.Token);
+        }
 
         /// <summary>
         /// An event triggered when the scheduler service starts
@@ -96,102 +132,21 @@ namespace Diassoft.Scheduler
         /// <summary>
         /// Method called prior to raising the <see cref="SchedulerStarted"/> event
         /// </summary>
-        /// <param name="e"></param>
-        /// <remarks>This method should change the status</remarks>
+        /// <param name="e">The Event Arguments</param>
         protected virtual void OnSchedulerStarted(EventArgs e)
         {
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerStarted)}] Entering function...");
-
             Status = SchedulerStatus.Active;
             SchedulerStarted?.Invoke(this, e);
-
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerStarted)}] Exiting function...");
         }
 
+        #endregion Event - Scheduler Start
+
+        #region Event - Scheduler Stop
+
         /// <summary>
-        /// An event triggered when the scheduler service is pausing
+        /// A cancelable event triggered before the scheduler service is stopped
         /// </summary>
-        public event EventHandler<EventArgs> SchedulerPausing;
-        /// <summary>
-        /// Method called prior to raising the <see cref="SchedulerPausing"/> event
-        /// </summary>
-        /// <param name="e"></param>
-        /// <remarks>This method should change the status</remarks>
-        protected virtual void OnSchedulerPausing(EventArgs e)
-        {
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerPausing)}] Entering function...");
-
-            Status = SchedulerStatus.Pausing;
-            SchedulerPausing?.Invoke(this, e);
-
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerPausing)}] Exiting function...");
-        }
-        /// <summary>
-        /// An event triggered when the scheduler service is paused
-        /// </summary>
-        public event EventHandler<EventArgs> SchedulerPaused;
-        /// <summary>
-        /// Method called prior to raising the <see cref="SchedulerPaused"/> event
-        /// </summary>
-        /// <param name="e"></param>
-        /// <remarks>This method should change the status</remarks>
-        protected virtual void OnSchedulerPaused(EventArgs e)
-        {
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerPaused)}] Entering function...");
-
-            Status = SchedulerStatus.Paused;
-            SchedulerPaused?.Invoke(this, e);
-
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerPaused)}] Exiting function...");
-        }
-        /// <summary>
-        /// An event triggered when the scheduler service is resuming from a paused state
-        /// </summary>
-        public event EventHandler<EventArgs> SchedulerResuming;
-        /// <summary>
-        /// Method called prior to raising the <see cref="SchedulerPaused"/> event
-        /// </summary>
-        /// <param name="e"></param>
-        /// <remarks>This method should change the status</remarks>
-        protected virtual void OnSchedulerResuming(EventArgs e)
-        {
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerResuming)}] Entering function...");
-
-            Status = SchedulerStatus.Resuming;
-            SchedulerResuming?.Invoke(this, e);
-
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerResuming)}] Exiting function...");
-        }
-        /// <summary>
-        /// An event triggered when the scheduler service is resumed after a paused state
-        /// </summary>
-        /// <remarks>This method should change the status</remarks>
-        public event EventHandler<EventArgs> SchedulerResumed;
-        /// <summary>
-        /// Method called prior to raising the <see cref="SchedulerPaused"/> event
-        /// </summary>
-        /// <param name="e"></param>
-        /// <remarks>This method should change the status</remarks>
-        protected virtual void OnSchedulerResumed(EventArgs e)
-        {
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerResumed)}] Entering function...");
-
-            Status = SchedulerStatus.Active;
-            SchedulerResumed?.Invoke(this, e);
-
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerResumed)}] Exiting function...");
-        }
-
+        public event CancelEventHandler BeforeSchedulerStopping;
         /// <summary>
         /// An event triggered when a request to stop the scheduler is called
         /// </summary>
@@ -199,19 +154,29 @@ namespace Diassoft.Scheduler
         /// <summary>
         /// Method caleld prior to raising the <see cref="SchedulerStopping"/> event
         /// </summary>
-        /// <param name="e"></param>
-        /// <remarks>This method should change the status</remarks>
+        /// <param name="e">The Event Arguments</param>
         protected virtual void OnSchedulerStopping(EventArgs e)
         {
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerStopping)}] Entering function...");
+            // Check for Event Cancellation
+            var eCancelable = new CancelEventArgs();
+            BeforeSchedulerStopping?.Invoke(this, eCancelable);
 
             Status = SchedulerStatus.Stopping;
             SchedulerStopping?.Invoke(this, e);
 
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerStopping)}] Exiting function...");
+            if (ctsSchedulerThread != null)
+            {
+                // There is a thread running, cancel it
+                ctsSchedulerThread.Cancel();
 
+                // Awake thread if it is sleeping
+                if (SchedulerThread.ThreadState.HasFlag(ThreadState.WaitSleepJoin)) SchedulerThread.Interrupt();
+            }
+            else
+            {
+                // There is no thread running, just call the event then
+                OnSchedulerStopped(new EventArgs());
+            }
         }
 
         /// <summary>
@@ -221,19 +186,127 @@ namespace Diassoft.Scheduler
         /// <summary>
         /// Method called prior to raising the <see cref="SchedulerStopped"/> event
         /// </summary>
-        /// <param name="e"></param>
+        /// <param name="e">The Event Arguments</param>
         /// <remarks>This method should change the status</remarks>
         protected virtual void OnSchedulerStopped(EventArgs e)
         {
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerStopped)}] Entering function...");
-
             Status = SchedulerStatus.Stopped;
             SchedulerStopped?.Invoke(this, e);
-
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnSchedulerStopped)}] Exiting function...");
         }
+
+        #endregion Event - Scheduler Stop
+
+        #region Event - Scheduler Pause
+
+        /// <summary>
+        /// A cancelable event triggered before the scheduler service is paused
+        /// </summary>
+        public event CancelEventHandler BeforeSchedulerPausing;
+        /// <summary>
+        /// An event triggered when the scheduler service is pausing
+        /// </summary>
+        public event EventHandler<EventArgs> SchedulerPausing;
+        /// <summary>
+        /// Method called prior to raising the <see cref="SchedulerPausing"/> event
+        /// </summary>
+        /// <param name="e">The Event Arguments</param>
+        protected virtual void OnSchedulerPausing(EventArgs e)
+        {
+            // Check for Event Cancellation
+            var eCancelable = new CancelEventArgs();
+            BeforeSchedulerPausing?.Invoke(this, eCancelable);
+
+            if (eCancelable.Cancel == true) return;
+
+            Status = SchedulerStatus.Pausing;
+            SchedulerPausing?.Invoke(this, e);
+
+            if (ctsSchedulerThread == null)
+            {
+                // There is no thread running, just call the events then
+                OnSchedulerPaused(new EventArgs());
+            }
+
+            // Awake thread if it is sleeping
+            if (SchedulerThread.ThreadState.HasFlag(ThreadState.WaitSleepJoin)) SchedulerThread.Interrupt();
+        }
+
+        /// <summary>
+        /// An event triggered when the scheduler service is paused
+        /// </summary>
+        public event EventHandler<EventArgs> SchedulerPaused;
+        /// <summary>
+        /// Method called prior to raising the <see cref="SchedulerPaused"/> event
+        /// </summary>
+        /// <param name="e">The Event Arguments</param>
+        protected virtual void OnSchedulerPaused(EventArgs e)
+        {
+            Status = SchedulerStatus.Paused;
+            SchedulerPaused?.Invoke(this, e);
+        }
+
+        #endregion Event - Scheduler Pause
+
+        #region Event - Scheduler Resume
+
+        /// <summary>
+        /// A cancelable event triggered before the scheduler service resumes from a paused state
+        /// </summary>
+        public event CancelEventHandler BeforeSchedulerResuming;
+        /// <summary>
+        /// An event triggered when the scheduler service is resuming from a paused state
+        /// </summary>
+        public event EventHandler<EventArgs> SchedulerResuming;
+        /// <summary>
+        /// Method called prior to raising the <see cref="SchedulerPaused"/> event
+        /// </summary>
+        /// <param name="e">The Event Arguments</param>
+        protected virtual void OnSchedulerResuming(EventArgs e)
+        {
+            // Check for Event Cancellation
+            var eCancelable = new CancelEventArgs();
+            BeforeSchedulerResuming?.Invoke(this, eCancelable);
+
+            if (eCancelable.Cancel == true) return;
+
+            Status = SchedulerStatus.Resuming;
+            SchedulerResuming?.Invoke(this, e);
+
+            // Resumes the scheduler
+            if (ctsSchedulerThread == null)
+            {
+                // There is no thread running, just call the events then
+                OnSchedulerResumed(new EventArgs());
+            }
+            else
+            {
+                // Wake up sleeping thread
+                if (SchedulerThread.ThreadState.HasFlag(ThreadState.WaitSleepJoin))
+                    SchedulerThread.Interrupt();
+                else
+                    // Something is missing and the thread cannot be resumed
+                    throw new ThreadStateException($"The {nameof(SchedulerThread)} is not at the {nameof(ThreadState.WaitSleepJoin)} state, therefore, it cannot be awoke");
+            }
+        }
+
+        /// <summary>
+        /// An event triggered when the scheduler service is resumed after a paused state
+        /// </summary>
+        /// <remarks>This method should change the status</remarks>
+        public event EventHandler<EventArgs> SchedulerResumed;
+        /// <summary>
+        /// Method called prior to raising the <see cref="SchedulerPaused"/> event
+        /// </summary>
+        /// <param name="e">The Event Arguments</param>
+        protected virtual void OnSchedulerResumed(EventArgs e)
+        {
+            Status = SchedulerStatus.Active;
+            SchedulerResumed?.Invoke(this, e);
+        }
+
+        #endregion Event - Scheduler Resume
+
+        #region Event - Time Reached
 
         /// <summary>
         /// An event triggered when an event should be executed
@@ -246,9 +319,6 @@ namespace Diassoft.Scheduler
         /// <param name="e">The arguments for the <see cref="EventTimeReached"/> event</param>
         protected virtual void OnEventTimeReached(ScheduleEventArgs e)
         {
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnEventTimeReached)}] Event '{e.EventInfo.Name}' time reached.");
-
             EventTimeReached?.Invoke(this, e);
         }
 
@@ -259,9 +329,6 @@ namespace Diassoft.Scheduler
         /// <param name="e">The arguments for the internal event</param>
         protected virtual void OnInternalEventTimeReached(ScheduleEventArgs e)
         {
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnInternalEventTimeReached)}] Event '{e.EventInfo.Name}' time reached.");
-
             // Internal Events do not trigger the regular 'EventTimeReached'. Instead, they must be handled by this method.
             
             // Process the "$CALCULATE_SCHEDULE" event
@@ -276,25 +343,24 @@ namespace Diassoft.Scheduler
                         if (eventInfo.Value.LastBuiltDate.Date < DateTime.Today)
                             CalculateSchedule(eventInfo.Key, true, DateTime.Today, DateTime.Today.AddDays(SCHEDULE_BUILD_DAYS), eventInfo.Value.ScheduleConfiguration);
                     }
-
                 }
             }
         }
+
+        #endregion Event - Time Reached
+
+        #region Event - Records Added / Removed from Schedule
 
         /// <summary>
         /// An event triggered when a record is added to the schedule
         /// </summary>
         public event EventHandler<ScheduleEventArgs> RecordAddedToSchedule;
-
         /// <summary>
         /// Method called prior to raising the <see cref="RecordAddedToSchedule"/> event
         /// </summary>
         /// <param name="e">The arguments for the <see cref="RecordAddedToSchedule"/> event</param>
         protected virtual void OnRecordAddedToSchedule(ScheduleExecutionEventArgs e)
         {
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnRecordAddedToSchedule)}] Event '{e.EventInfo.Name}' has been added to the schedule. It will be executed at '{e.ExecutionInfo.ExecutionDateTime:DISPLAY_DATE_FORMAT}'");
-
             RecordAddedToSchedule?.Invoke(this, e);
         }
 
@@ -302,18 +368,16 @@ namespace Diassoft.Scheduler
         /// An event triggered when a record is removed from the schedule
         /// </summary>
         public event EventHandler<ScheduleEventArgs> RecordRemovedFromSchedule;
-
         /// <summary>
         /// Method called prior to raising the <see cref="OnRecordRemovedFromSchedule"/> event
         /// </summary>
         /// <param name="e">The arguments for the <see cref="RecordRemovedFromSchedule"/> event</param>
         protected virtual void OnRecordRemovedFromSchedule(ScheduleExecutionEventArgs e)
         {
-            // Logging
-            Logger?.LogTrace($"[{nameof(OnRecordRemovedFromSchedule)}] Event '{e.EventInfo.Name}' at '{e.ExecutionInfo.ExecutionDateTime:DISPLAY_DATE_FORMAT}' has been removed from schedule.");
-
             RecordRemovedFromSchedule?.Invoke(this, e);
         }
+
+        #endregion Event - Records Added / Removed from Schedule
 
         #endregion Events
 
@@ -363,15 +427,15 @@ namespace Diassoft.Scheduler
         #region Constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Scheduler{T}"/> class
+        /// Initializes a new instance of the <see cref="EventScheduler{T}"/> class
         /// </summary>
-        public Scheduler(): this(null) { }
+        public EventScheduler(): this(null) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Scheduler{T}"/> class
+        /// Initializes a new instance of the <see cref="EventScheduler{T}"/> class
         /// </summary>
         /// <param name="logger">The logger</param>
-        public Scheduler(ILogger logger)
+        public EventScheduler(ILogger logger)
         {
             this.Logger = logger;
 
@@ -410,7 +474,6 @@ namespace Diassoft.Scheduler
                     returnList.Add(item.Value);
             }
                 
-
             return returnList;
         }
 
@@ -527,7 +590,11 @@ namespace Diassoft.Scheduler
                         {
                             var executionInfo = new ScheduledEventExecutionInfo(scheduledEvent.Name, scheduledEvent.Description, executionTime, scheduledEvent.EventGroup);
                             ScheduledEvents.Add(eventKey, executionInfo);
-                            OnRecordAddedToSchedule(new ScheduleExecutionEventArgs(EventMaster[uniqueNameUpper], executionInfo));
+
+                            // Logging
+                            Logger?.LogTrace($"[{nameof(CalculateSchedule)}] Event '{scheduledEvent.Name}' has been added to the schedule. It will be executed at '{executionInfo.ExecutionDateTime:DISPLAY_DATE_FORMAT}'");
+
+                            OnRecordAddedToSchedule(new ScheduleExecutionEventArgs(scheduledEvent, executionInfo));
                         }
                     }
                 }
@@ -543,8 +610,6 @@ namespace Diassoft.Scheduler
                 // Logging
                 Logger?.LogTrace($"[{nameof(CalculateSchedule)}] Entering Function...");
             }
-
-
         }
 
         /// <summary>
@@ -635,13 +700,19 @@ namespace Diassoft.Scheduler
                     if (!EventMaster.ContainsKey(uniqueNameUpper))
                         throw new Exception($"There is no event with the unique name '{uniqueNameUpper}' to be removed");
 
+                    var scheduledEvent = EventMaster[uniqueNameUpper];
+
                     // Look for all events and remove the events based on the unique name
                     foreach (var item in ScheduledEvents)
                     {
                         if (item.Value.Name == uniqueNameUpper)
                         {
                             ScheduledEvents.Remove(item.Key);
-                            OnRecordRemovedFromSchedule(new ScheduleExecutionEventArgs(EventMaster[uniqueNameUpper], item.Value));
+
+                            // Logging
+                            Logger?.LogTrace($"[{nameof(RemoveEventFromSchedule)}] Event '{scheduledEvent.Name}' at '{item.Value.ExecutionDateTime:DISPLAY_DATE_FORMAT}' has been removed from schedule.");
+
+                            OnRecordRemovedFromSchedule(new ScheduleExecutionEventArgs(scheduledEvent, item.Value));
                         }
                     }
 
@@ -714,12 +785,7 @@ namespace Diassoft.Scheduler
                 // Initialize the scheduler
                 if (Status == SchedulerStatus.Stopped)
                 {
-                    Status = SchedulerStatus.Starting;
-
-                    OnCreateInternalEvents();
-
-                    ctsSchedulerThread = new CancellationTokenSource();
-                    SchedulerThread.Start(ctsSchedulerThread.Token);
+                    OnSchedulerStarting(new EventArgs());
                 }
             }
             catch (Exception e)
@@ -758,8 +824,17 @@ namespace Diassoft.Scheduler
         /// <summary>
         /// Requests the Scheduler to stop
         /// </summary>
-        /// <remarks>This method will request a stop and exit irrespective of the scheduler status. Check the <see cref="SchedulerStopped"/> event to ensure the service is stopped.</remarks>
         public void Stop()
+        {
+            Stop(false);
+        }
+
+        /// <summary>
+        /// Requests the Scheduler to stop
+        /// </summary>
+        /// <param name="waitForCompletion">Defines whether the method will return only after the pause has been completed</param>
+        /// <remarks>This method will request a stop and exit irrespective of the scheduler status. Check the <see cref="SchedulerStopped"/> event to ensure the service is stopped.</remarks>
+        public void Stop(bool waitForCompletion)
         {
             // Logging
             Logger?.LogTrace($"[{nameof(Stop)}] Entering Function...");
@@ -768,32 +843,32 @@ namespace Diassoft.Scheduler
             {
                 // Attempt to cancel the execution of the scheduler thread
                 if (Status == SchedulerStatus.Stopped ||
-                    Status == SchedulerStatus.StopRequested ||
                     Status == SchedulerStatus.Stopping)
                 {
                     // Logging
                     Logger?.LogTrace($"[{nameof(Stop)}] Scheduler is already being stopped, no action needed");
                     return;
                 }
-                
-                // Initializes the Stop Procedure (which will force the loop at "ProcessSchedule" to end)
-                Status = SchedulerStatus.StopRequested;
 
-                if (ctsSchedulerThread != null)
+                OnSchedulerStopping(new EventArgs());
+
+                // Check Wait For Completion Parameter
+                if (waitForCompletion)
                 {
-                    // There is a thread running, cancel it
+                    var startTime = DateTime.Now;
+                    SpinWait spin = new SpinWait();
 
-                    OnSchedulerStopping(new EventArgs());
-                    ctsSchedulerThread.Cancel();
+                    while (Status != SchedulerStatus.Paused)
+                    {
+                        spin.SpinOnce();
 
-                    // Awake thread if it is sleeping
-                    if (SchedulerThread.ThreadState.HasFlag(ThreadState.WaitSleepJoin)) SchedulerThread.Interrupt();
-                }
-                else
-                {
-                    // There is no thread running, just call the event then
-                    OnSchedulerStopping(new EventArgs());
-                    OnSchedulerStopped(new EventArgs());
+                        var timeElapsed = DateTime.Now - startTime;
+                        if (timeElapsed.TotalMilliseconds > WaitForCompletionTimeout)
+                        {
+                            // Time is up, throw an exception then
+                            throw new TimeoutException($"The method could not complete in less than {WaitForCompletionTimeout} milliseconds");
+                        }
+                    }
                 }
             }
             catch (Exception e)
@@ -833,7 +908,6 @@ namespace Diassoft.Scheduler
             {
                 // Attempt to pause the execution of the scheduler thread
                 if (Status == SchedulerStatus.Paused ||
-                    Status == SchedulerStatus.PauseRequested ||
                     Status == SchedulerStatus.Pausing)
                 {
                     // Logging
@@ -842,17 +916,7 @@ namespace Diassoft.Scheduler
                 }
 
                 // Initializes the Pause Procedure (which will force the loop at "ProcessSchedule" to stop )
-                Status = SchedulerStatus.PauseRequested;
-
-                if (ctsSchedulerThread == null)
-                {
-                    // There is no thread running, just call the events then
-                    OnSchedulerPausing(new EventArgs());
-                    OnSchedulerPaused(new EventArgs());
-                }
-
-                // Awake thread if it is sleeping
-                if (SchedulerThread.ThreadState.HasFlag(ThreadState.WaitSleepJoin)) SchedulerThread.Interrupt();
+                OnSchedulerPausing(new EventArgs());
 
                 // Check Wait For Completion Parameter
                 if (waitForCompletion)
@@ -865,10 +929,10 @@ namespace Diassoft.Scheduler
                         spin.SpinOnce();
 
                         var timeElapsed = DateTime.Now - startTime;
-                        if (timeElapsed.TotalMilliseconds > WAIT_FOR_COMPLETION_TIMEOUT)
+                        if (timeElapsed.TotalMilliseconds > WaitForCompletionTimeout)
                         {
                             // Time is up, throw an exception then
-                            throw new TimeoutException($"The method could not complete in less than {WAIT_FOR_COMPLETION_TIMEOUT} milliseconds");
+                            throw new TimeoutException($"The method could not complete in less than {WaitForCompletionTimeout} milliseconds");
                         }
                     }
                 }
@@ -912,7 +976,6 @@ namespace Diassoft.Scheduler
             {
                 // Attempt to pause the execution of the scheduler thread
                 if (Status == SchedulerStatus.Active ||
-                    Status == SchedulerStatus.ResumeRequested ||
                     Status == SchedulerStatus.Resuming)
                 {
                     // Logging
@@ -921,23 +984,7 @@ namespace Diassoft.Scheduler
                 }
 
                 // Initializes the Resume Procedure (which will force the loop at "ProcessSchedule" to continue )
-                Status = SchedulerStatus.ResumeRequested;
-
-                if (ctsSchedulerThread == null)
-                {
-                    // There is no thread running, just call the events then
-                    OnSchedulerResuming(new EventArgs());
-                    OnSchedulerResumed(new EventArgs());
-                }
-                else
-                {
-                    // Wake up sleeping thread
-                    if (SchedulerThread.ThreadState.HasFlag(ThreadState.WaitSleepJoin))
-                        SchedulerThread.Interrupt();
-                    else
-                        // Something is missing and the thread cannot be resumed
-                        throw new ThreadStateException($"The {nameof(SchedulerThread)} is not at the {nameof(ThreadState.WaitSleepJoin)} state, therefore, it cannot be awoke");
-                }
+                OnSchedulerResuming(new EventArgs());
 
                 // Check Wait For Completion Parameter
                 if (waitForCompletion)
@@ -950,10 +997,10 @@ namespace Diassoft.Scheduler
                         spin.SpinOnce();
 
                         var timeElapsed = DateTime.Now - startTime;
-                        if (timeElapsed.TotalMilliseconds > WAIT_FOR_COMPLETION_TIMEOUT)
+                        if (timeElapsed.TotalMilliseconds > WaitForCompletionTimeout)
                         {
                             // Time is up, throw an exception then
-                            throw new TimeoutException($"The method could not complete in less than {WAIT_FOR_COMPLETION_TIMEOUT} milliseconds");
+                            throw new TimeoutException($"The method could not complete in less than {WaitForCompletionTimeout} milliseconds");
                         }
                     }
                 }
@@ -993,9 +1040,8 @@ namespace Diassoft.Scheduler
                 while (!cancellationToken_SchedulerThread.IsCancellationRequested)
                 {
                     // Check for Pause State
-                    if (Status == SchedulerStatus.PauseRequested)
+                    if (Status == SchedulerStatus.Pausing)
                     {
-                        OnSchedulerPausing(new EventArgs());
                         OnSchedulerPaused(new EventArgs());
 
                         try
@@ -1005,7 +1051,6 @@ namespace Diassoft.Scheduler
                         }
                         catch (ThreadInterruptedException)
                         {
-                            OnSchedulerResuming(new EventArgs());
                             OnSchedulerResumed(new EventArgs());
                         }
                     }
@@ -1041,12 +1086,17 @@ namespace Diassoft.Scheduler
                                 // Check the proper event group
                                 if (nextScheduledEventInfo.EventGroup == EventGroups.Internal)
                                 {
+                                    // Logging
+                                    Logger?.LogTrace($"[{nameof(ProcessSchedule)}] Internal Event '{nextScheduledEventInfo.Name}' time reached.");
+
                                     // Internal Events only call the internal function
                                     OnInternalEventTimeReached(new ScheduleEventArgs(nextScheduledEventInfo));
                                 }
                                 else
                                 {
-                                    
+                                    // Logging
+                                    Logger?.LogTrace($"[{nameof(ProcessSchedule)}] Event '{nextScheduledEventInfo.Name}' time reached.");
+
                                     if (TriggerEventsAsynchronously)
                                     {
                                         // Call the event asynchronously
@@ -1119,10 +1169,6 @@ namespace Diassoft.Scheduler
         /// </summary>
         Stopped = 0,
         /// <summary>
-        /// The Scheduler is going to stop scheduling events
-        /// </summary>
-        StopRequested = 1,
-        /// <summary>
         /// The Scheduler is processing a Stop Request, and it will be stopped once all scheduling events are deleted
         /// </summary>
         Stopping = 2,
@@ -1133,23 +1179,15 @@ namespace Diassoft.Scheduler
         /// <summary>
         /// The Scheduler is Starting
         /// </summary>
-        Starting = 11,
+        Starting = 12,
         /// <summary>
         /// The Scheduler is Paused
         /// </summary>
         Paused = 20,
         /// <summary>
-        /// The Scheduler is going to pause scheduling events
-        /// </summary>
-        PauseRequested = 21,
-        /// <summary>
         /// The Scheduler is processing a Pause Request
         /// </summary>
         Pausing = 22,
-        /// <summary>
-        /// The Scheduler is going to resume scheduling events
-        /// </summary>
-        ResumeRequested = 31,
         /// <summary>
         /// The Scheduler is resuming from a Paused state
         /// </summary>
