@@ -1,4 +1,4 @@
-# Scheduler - v1.2.0
+# Scheduler - v1.3.0
 
 [![nuget](https://img.shields.io/nuget/v/Diassoft.Scheduler.svg)](https://www.nuget.org/packages/Diassoft.Scheduler/) 
 ![GitHub release](https://img.shields.io/github/release/diassoft/Scheduler.svg)
@@ -25,6 +25,7 @@ This is a list containing the most relevant changes that the developers need to 
 
 | Version | Notes |
 | :-- | :-- |
+| v1.3.0 | Corrected the Nuget Package References for the `Microsoft.Extensions.Logging.Abstractions` package. |
 | v1.2.0 | Replaced the `Scheduler<T>` with the `EventScheduler<T>` class |
 
 ## Getting Started
